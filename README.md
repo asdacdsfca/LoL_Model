@@ -9,7 +9,7 @@ ___
 - The data is taken from [this website](https://oracleselixir.com/tools/downloads)
 - Our **Prediction Question** for this project is:
 
-    ### *Predict whether a player's position is support given their post-game data.* 
+### *Predict whether a player's position is support given their post-game data.* 
 
 - **Type:** Classification
     - We chose classification because our prediction target is a categorical data type. Classification is a predictive model to identify discrete output variables, such as labels or categories.
@@ -19,4 +19,7 @@ ___
 
 - **Response Variable:** position
     We choose this variable because we are trying to predict if a player's position is "support" and this column exactly records each player's position information.
+
+- **Information at "Time of Prediction:**
+
 
