@@ -14,3 +14,9 @@ ___
 - **Type:** Classification
     - We chose classification because our prediction target is a categorical data type. Classification is a predictive model to identify discrete output variables, such as labels or categories.
 
+    - **Binary Classification**
+    Since we only predict whether the position is "support," each data sample will assign one and only one label from two mutually exclusive classes, such as true and false.
+
+- **Response Variable:** position
+    We choose this variable because we are trying to predict if a player's position is "support" and this column exactly records each player's position information.
+
