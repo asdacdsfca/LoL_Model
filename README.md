@@ -23,4 +23,24 @@ ___
 - **Information at "Time of Prediction:**
     Since our prediction of player's role is based on the post-game data, we would have everything except for the `position` column in the data set. To avoid overfitting, we decided to only use these features: [`patch`, `champion`, `position`, `kills`,`deaths`, `assists`, `dpm`, `damageshare`, `damagetakenperminute`, `vspm`, `earned gpm`, `cspm`].
 
+___
+## Baseline Model
+- **Type of Features**
+    - `patch`: Ordinal
+    - `champion`: Categorical - 
+    - `deaths`: Nominal
+    - `kills`: Nominal
+    - `assists`: Nominal
+    - `dpm`: 
+    - `damageshare`:
+    - `damagetakenperminute`:
+    - `vspm`:
+    - `earned gpm`:
+    - `cspm`:
+- **Number of Quantitive:**
+- **Number of Ordinal:**
+- **Number of nominal:** 
+- **Process of Encoding:**
+- **Current Condition of the Model:** While there are things that we can still improve, I think the baseline model is already a good representation of our final model's behavior. The reason is, we've included many representated features that could effectively demonstrate the behavior of `sup` roles. 
+
 
