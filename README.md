@@ -58,6 +58,10 @@ ___
     - We chose to apply a `FunctionTransformer` on `kills` and `assists`, which computes $(kills+1)/(assists+1)$. This helps our prediction because we observed that `sup` tends to have more `assits` than the `kills` they have. 
 
 - **Search for Best Model**
-    - We chose to use  
+    - We chose to use Decision Tree Classification as our model since we are predicting whether a player's position is support.
+    - The hyperparameters that ended up performing the best is: `{'tree__criterion': 'gini', 'tree__max_depth': 4, 'tree__min_samples_split': 2}`
+    - The method we used to select hyperparameters is `GridSearchCV`
+    - The overall model is that we transform all catergorical columns, `patch` and `champion`, into numerical column by apply `OneHotEncoding` Transformer, and then used `QuantileTransformer` to make the `vspm`, stands for "version score per minute" , more into a normal distribution, and used log inside a `FunctionTransformer` to make `dpm`, stands for "damage per minute", less skewed, and used another `FunctionTransformer` to find the `kills` per `assists` from the given dataset. Finally, we use `DecisionTreeClassifier` with the best hyperparameters we found from `GrodSearchCV` to created our final model.
+    - When we comparing the score from both the baseline model and final model, we see the result has a slight improvement. This is because we made our numerical data more representable then before after those new transformations.
 
 
