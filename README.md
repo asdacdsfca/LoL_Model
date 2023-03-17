@@ -50,6 +50,14 @@ ___
 ---
 ## Final Model
 - **Features Added**
-    - We chose to apply a `QuantileTransformer` on `vspm` and `earned gpm` because we noticed that if the `position` were `sup` they tend to have a higher `vspm` and lower `earned gpm` which means if we quantiles these two features then data in upper quantile of `vspm` and in lower quantile of `earned gpm` are likely to be `sup`. 
+    - We chose to apply a `QuantileTransformer` on `vspm` and `earned gpm` because we noticed that if the `position` were `sup` they tend to have a much more higher `vspm` than other positions and significantly lower `earned gpm` than other positions, which means that the distribution of these two columns are not normal, leads to potential high bias in our predictions. 
+    if we quantiles these two features then data in upper quantile of `vspm` and in lower quantile of `earned gpm` are likely to be `sup`. 
+
+    - We chose to apply a `FunctionTransformer` on `dpm`, which computes $log(dmp+1)$ because we noticed that `sup` tends to deal much low `dpm`. However, based on our observation, if a player deals a very high dmp, for example, 500 should be weight similarily to dpm 1200 and 
+
+    - We chose to apply a `FunctionTransformer` on `kills` and `assists`, which computes $(kills+1)/(assists+1)$. This helps our prediction because we observed that `sup` tends to have more `assits` than the `kills` they have. 
+
+- **Search for Best Model**
+    - We chose to use  
 
 
