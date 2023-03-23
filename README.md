@@ -4,13 +4,14 @@ by Andrew Zhao (yiz158@ucsd.edu)
 Yiheng Yuan (yiy159@ucsd.edu)
 
 Our exploratory data analysis on this dataset can be found [here](https://asdacdsfca.github.io/LOL_Esports_Analysis/).
+
 ___
 ## Introduction
 - Our data contains the information of **LoL** (League of Legends, a popular moba games) **esports matches** in **2022**.
 - The data is taken from [this website](https://oracleselixir.com/tools/downloads)
 - Our **Prediction Question** for this project is:
 
-### *Predict whether a player's role is support given their post-game data.* 
+*Predict whether a player's role is support given their post-game data.* 
 
 - **Type:** Classification
     - We chose classification because our prediction target is a categorical data type. Classification is a predictive model to identify discrete output variables, such as labels or categories.
@@ -29,37 +30,39 @@ ___
 
 ___
 ## Baseline Model
+- **Describe Model**
+    - We use `DecisionTreeClassifer` and **OneHotEncoded** `patch` and `champion`
 - **Type of Features**
     - `patch`: Ordinal
     - `champion`: Nominal
-    - `deaths`: Discrete
-    - `kills`: Discrete
-    - `assists`: Discrete
-    - `dpm`: Continous
-    - `damageshare`: Continous
-    - `damagetakenperminute`: Continous
-    - `vspm`: Continous
-    - `earned gpm`: Continous
-    - `cspm`: Continous
+    - `deaths`: Quantitive
+    - `kills`: Quantitive
+    - `assists`: Quantitive
+    - `dpm`: Quantitive
+    - `damageshare`: Quantitive
+    - `damagetakenperminute`: Quantitive
+    - `vspm`: Quantitive
+    - `earned gpm`: Quantitive
+    - `cspm`: Quantitive
 - **Number of Quantitive:** 9
 - **Number of Ordinal:** 1
 - **Number of nominal:** 1
 - **Process of Encoding:**
-    - Since we can't use categorical columns directly, we have to feature engineer `patch` and `champion`. Here we chose to use `OneHotEncode` ....
-- **Current Condition of the Model:** While there are things that we can still improve, I think the baseline model is already a good representation of our final model's behavior. The reason is, we've included many representated features that could effectively demonstrate the behavior of `sup` roles. 
+    - Since we can't use categorical columns directly, we have to feature engineer `patch` and `champion`. Here we chose to use `OneHotEncode`because they are categorical and champion doesn't have an inherent order. **!!!Note: Even though the 'patch' column contains ordinal values, since the order of the patch does not have any meaningful relationship with the position we are trying to predict, that is, as the patch increase does not mean people are more likely to play support or less likely to play support. In conclusion, we perform one hot encoding rather than ordinal encoding.**
+- **Current Condition of the Model:** While there are things that we can still improve, I think the baseline model is already a good representation of our final model's behavior. The reason is, we've included many representated features that could effectively demonstrate the behavior of `sup` roles and the model generalizes well as its score on training set and testing set are very close. 
 
 ---
 ## Final Model
 - **Features Added**
-    - We chose to apply a `QuantileTransformer` on `vspm` and `earned gpm` because we noticed that those two columns contain some outliers that is not representative and we want to improve our model to be more accurate and more representative, so we use `QuantileTransformer` to remove those outliers.
+    - We chose to apply a `QuantileTransformer` on `vspm` and `earned gpm` because we noticed that those two columns contain some outliers that is not representative and we want to improve our model to be more accurate and more representative of the majority and not affected by outliers, so we use `QuantileTransformer` to remove those outliers.
 
-    - We chose to apply a `FunctionTransformer` on `kills` and `assists`, which computes $(kills+1)/(assists+1)$. This helps our prediction because we observed that `sup` tends to have more `assits` than the `kills` they have. 
+    - We chose to apply a `FunctionTransformer` on `kills` and `assists`, which computes (kills+1)/(assists+1). This helps our prediction because we observed that `sup` tends to have more `assits` than the `kills` they have. 
 
 - **Search for Best Model**
     - We chose to use Decision Tree Classification as our model. The decision-tree algorithm is a constructive one that aids essential decision-making processes. It bisects the space into smaller and smaller regions, whereas Logistic Regression, as comparing, fits a single line to divide the space precisely into two. Since we aim to predict a true-false question, and the data distribution cannot be linearly separate, the decision tree best fits and answers it. 
     - The hyperparameters that ended up performing the best is: `{'tree__criterion': 'gini', 'tree__max_depth': 5, 'tree__min_samples_split': 10}`
     - The method we used to select hyperparameters is `GridSearchCV`
-    - The overall model is that we transform all catergorical columns, `patch` and `champion`, into numerical column by apply `OneHotEncoding` Transformer, and then used `QuantileTransformer` to make the `vspm`, stands for "version score per minute" , more into a normal distribution, and used log inside a `FunctionTransformer` to make `dpm`, stands for "damage per minute", less skewed, and used another `FunctionTransformer` to find the `kills` per `assists` from the given dataset. Finally, we use `DecisionTreeClassifier` with the best hyperparameters we found from `GrodSearchCV` to created our final model.
+    - The overall model is that we transform all catergorical columns, `patch` and `champion`, into numerical column by apply `OneHotEncoding` Transformer, and then used `QuantileTransformer` to make the `vspm`, stands for "version score per minute" , and `earned gpm` to remove the outliers so our model is more representative of our data, and used a `FunctionTransformer` to find the `kills` per `assists` from the given dataset. Finally, we use `DecisionTreeClassifier` with the best hyperparameters we found from `GrodSearchCV` to created our final model.
     - When we comparing the score from both the baseline model and final model, we see the result has a slight improvement. This is because we made our numerical data more representable then before after those new transformations.
 
 ## Fairness Analysis
@@ -68,7 +71,7 @@ ___
 
 - **Group Y:** player who pick champion that is not defualt as a support champion by league of legends offically
 
-Reference URL: https://www.leagueoflegends.com/en-us/champions/
+Reference URL: [click to see](https://www.leagueoflegends.com/en-us/champions/)
 
 - **Evaluation Metric:** Accuracy
 
