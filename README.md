@@ -1,8 +1,9 @@
-# LoL Esports Matches Win Rate Analysis
+# LoL Esports Model Building For Predict Support Position
 by Andrew Zhao (yiz158@ucsd.edu)
 
 Yiheng Yuan (yiy159@ucsd.edu)
 
+Our exploratory data analysis on this dataset can be found [here](https://asdacdsfca.github.io/LOL_Esports_Analysis/).
 ___
 ## Introduction
 - Our data contains the information of **LoL** (League of Legends, a popular moba games) **esports matches** in **2022**.
@@ -50,18 +51,33 @@ ___
 ---
 ## Final Model
 - **Features Added**
-    - We chose to apply a `QuantileTransformer` on `vspm` and `earned gpm` because we noticed that if the `position` were `sup` they tend to have a much more higher `vspm` than other positions and significantly lower `earned gpm` than other positions, which means that the distribution of these two columns are not normal, leads to potential high bias in our predictions. 
-    if we quantiles these two features then data in upper quantile of `vspm` and in lower quantile of `earned gpm` are likely to be `sup`. 
-
-    - We chose to apply a `FunctionTransformer` on `dpm`, which computes $log(dmp+1)$ because we noticed that `sup` tends to deal much low `dpm`. However, based on our observation, if a player deals a very high dmp, for example, 500 should be weight similarily to dpm 1200 and 
+    - We chose to apply a `QuantileTransformer` on `vspm` and `earned gpm` because we noticed that those two columns contain some outliers that is not representative and we want to improve our model to be more accurate and more representative, so we use `QuantileTransformer` to remove those outliers.
 
     - We chose to apply a `FunctionTransformer` on `kills` and `assists`, which computes $(kills+1)/(assists+1)$. This helps our prediction because we observed that `sup` tends to have more `assits` than the `kills` they have. 
 
 - **Search for Best Model**
-    - We chose to use Decision Tree Classification as our model since we are predicting whether a player's position is support.
-    - The hyperparameters that ended up performing the best is: `{'tree__criterion': 'gini', 'tree__max_depth': 4, 'tree__min_samples_split': 2}`
+    - We chose to use Decision Tree Classification as our model. The decision-tree algorithm is a constructive one that aids essential decision-making processes. Since we aim to predict a true-false question, the decision tree best fits and answers it.
+    - The hyperparameters that ended up performing the best is: `{'tree__criterion': 'gini', 'tree__max_depth': 5, 'tree__min_samples_split': 10}`
     - The method we used to select hyperparameters is `GridSearchCV`
     - The overall model is that we transform all catergorical columns, `patch` and `champion`, into numerical column by apply `OneHotEncoding` Transformer, and then used `QuantileTransformer` to make the `vspm`, stands for "version score per minute" , more into a normal distribution, and used log inside a `FunctionTransformer` to make `dpm`, stands for "damage per minute", less skewed, and used another `FunctionTransformer` to find the `kills` per `assists` from the given dataset. Finally, we use `DecisionTreeClassifier` with the best hyperparameters we found from `GrodSearchCV` to created our final model.
     - When we comparing the score from both the baseline model and final model, we see the result has a slight improvement. This is because we made our numerical data more representable then before after those new transformations.
 
+## Fairness Analysis
 
+- **Group X:** player who pick champion that is defualt as a support champion by league of legends offically
+
+- **Group Y:** player who pick champion that is not defualt as a support champion by league of legends offically
+
+Reference URL: https://www.leagueoflegends.com/en-us/champions/
+
+- **Evaluation Metric:** Accuracy
+
+- **Null Hypothesis:** Our model is fair. Its accuracy for player who choose a support champion and player who choose a non-support champion are roughly the same, and any differences are due to random chance.
+
+- **Alternative Hypothesis:** Our model is unfair. Its accuracy for player who choose a support champion is lower than its precision for player who choose a non-support champion.
+
+- **Test statistic:** Difference in accuracy (support minus non-support).
+
+- **Significance level:** 0.05.
+
+- **Conculsion:** After the permutation test and observed the p-value, it seems like the difference in accuracy across the two groups is significant.
